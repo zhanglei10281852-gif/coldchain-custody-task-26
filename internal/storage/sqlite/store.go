@@ -33,14 +33,7 @@ func Open(ctx context.Context, path string) (*Store, error) {
 	if strings.Contains(dsn, "?") {
 		separator = "&"
 	}
-	pragmas := []string{
-		"_pragma=busy_timeout(5000)",
-		"_pragma=journal_mode(WAL)",
-	}
-	if path == ":memory:" {
-		pragmas = append(pragmas, "_pragma=cache_size(2000)")
-	}
-	dsn += separator + strings.Join(pragmas, "&")
+	dsn += separator + "_pragma=foreign_keys(1)&_pragma=busy_timeout(5000)&_pragma=journal_mode(WAL)"
 	db, err := sql.Open("sqlite", dsn)
 	if err != nil {
 		return nil, fmt.Errorf("open sqlite: %w", err)
